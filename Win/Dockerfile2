@@ -1,0 +1,30 @@
+FROM db1_base:latest as db1_image
+
+ARG HOST_GID=9999
+ARG HOST_UID=9999
+ARG username=user
+
+#RUN groupadd -g $HOST_GID $username && \
+#RUN useradd -u $HOST_UID -s /bin/bash -g $username $username
+RUN useradd -u $HOST_UID -s /bin/bash $username
+
+# Set up the user environment
+RUN echo 'user:2023Db1' | chpasswd
+RUN adduser user dialout
+RUN adduser user sudo
+
+# Set the script to be the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+
+USER $username
+WORKDIR /home/$username
+ENV LANG=en_US.UTF-8
+ENV HOME=/home/user
+ENV SHELL=/bin/bash
+
+#Start code-server
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none"]
+
+
+
