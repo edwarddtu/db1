@@ -44,6 +44,9 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
         echo "that oppened in your browser"
         wsl --install -d Ubuntu 
         Start-Process "https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview"
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        echo "!!! Now close this window and re-run the installer once again !!!!"
+        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         exit 2
     }
 } else {

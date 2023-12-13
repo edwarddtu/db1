@@ -35,7 +35,7 @@ wsl  bash -c "bash $dockDirectory/initDock.sh"
 #Making sure that we have the tools that allow us to use the serial port in WSL
 echo "Installing the usb tools"
 winget install --exact dorssel.usbipd-win
-wsl -u root apt install linux-tools-virtual hwdata
+wsl -u root apt install -y linux-tools-virtual hwdata
 wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $(command -v ls /usr/lib/linux-tools/*/usbip | tail -n1) 20
 
 #wsl -u root apt install linux-tools-5.4.0-77-generic hwdata
