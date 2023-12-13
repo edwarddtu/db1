@@ -1,1 +1,2 @@
-usbipd wsl detach -a
+usbipd detach -a
+pause
