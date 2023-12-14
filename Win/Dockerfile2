@@ -24,7 +24,7 @@ ENV HOME=/home/user
 ENV SHELL=/bin/bash
 
 #Start code-server
-CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none"]
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "none", "$HOME/db1.code-workspace"]
 
 
 

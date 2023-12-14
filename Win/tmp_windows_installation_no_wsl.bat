@@ -11,10 +11,9 @@ cd /d "%scriptdir%"
 
 ::call :RunPowerShellScript "./check_wsl.ps1"
 call :RunPowerShellScript "./install.ps1"
-::call :RunPowerShellScript "C:\path\to\script3.ps1"
 :: Add more scripts as needed
 
-pause
+if %errorlevel%  equ 0 pause
 
 goto :eof
 

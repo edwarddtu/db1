@@ -9,17 +9,15 @@ SET "scriptdir=%~dp0"
 cd /d "%scriptdir%"
 
 
-call :RunPowerShellScript "./check_wsl.ps1"
 call :RunPowerShellScript "./install.ps1"
-::call :RunPowerShellScript "C:\path\to\script3.ps1"
 :: Add more scripts as needed
 
-pause
+if %errorlevel%  equ 0 pause
 
 goto :eof
 
 :RunPowerShellScript
-PowerShell -NoProfile -ExecutionPolicy Bypass -File "%~1"
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "%~1"
 if %errorlevel% neq 0 goto :ErrorHandler
 goto :eof
 

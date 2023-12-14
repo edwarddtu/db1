@@ -16,6 +16,7 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
         if ($wslStatus -match "Default Version:.*2") {
             # WSL 2 with Ubuntu is set as default
             Write-Host "WSL 2 with Ubuntu is set as the default distribution."
+            wsl
             exit 0
         }
         else {
@@ -29,6 +30,7 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
             $verificationStatus = $verificationStatus -replace "`0", ""
             if ($verificationStatus -match "Ubuntu\s+.*\s+2") {
                 Write-Host "Conversion to WSL 2 successful."
+                wsl
                 exit 0
             } else {
                 Write-Host "Failed to convert Ubuntu to WSL 2."
@@ -39,15 +41,9 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
     else {
         # Open the Microsoft documentation in the default browser
         echo "We need to install Ubuntu. In the process you'll also need to "
-        echo "create a user and set up a password. When you are done run the " 
-        echo "installation file once again. For more info you can also look at the file"
-        echo "that oppened in your browser"
+        echo "create a user and set up a password. "
         wsl --install -d Ubuntu 
-        Start-Process "https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview"
-        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        echo "!!! Now close this window and re-run the installer once again !!!!"
-        echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        exit 2
+        exit 0
     }
 } else {
     # WSL is not available

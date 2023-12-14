@@ -5,10 +5,24 @@ $dockDirectory = "/home/$wslUserName/dock"
 # Create the 'dock' subdirectory in the WSL user's home directory
 wsl mkdir -p $dockDirectory
 
+$winDesktop= "$home\Desktop"
+$winDockDirectory = "\\wsl.localhost\Ubuntu\home\$wslUserName\dock"
+
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WScriptShell.CreateShortcut( "$home\Desktop\DOCK.lnk")
+$Shortcut.TargetPath = "$winDockDirectory"
+$Shortcut.WindowStyle = 1
+$Shortcut.Description = "Shortcut to the docker folder on Ubuntu(WSL)"
+$Shortcut.WorkingDirectory = "$winDockDirectory"
+$Shortcut.Save()
+
+ wsl -u root apt-get install -y dos2unix
 
 # Copy necessary files from the current directory in PowerShell to the 'dock' directory in WSL
-dos2unix *.sh
-dos2unix Docker*
+wsl dos2unix *.sh
+wsl dos2unix Docker*
+wsl dos2unix ../Common/*.sh
+wsl chmod +x ../Common/*.sh
 wsl cp -rf *.sh $dockDirectory
 wsl cp -rf Dockerfile* $dockDirectory
 
