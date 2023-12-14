@@ -1,5 +1,9 @@
 FROM ubuntu:latest as db1_base
 
+# Accept the build argument
+ARG PROJ_DIR_NAME
+ARG PARENT_DIR_NAME
+
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
@@ -42,13 +46,20 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 #Saving the pymakr extension on the tmp directory
 RUN mkdir /home/tmp
-COPY pycom* /home/tmp
+COPY ${PROJ_DIR_NAME}/Common/* /home/tmp
+RUN mkdir /home/tmp/DefaultProj
+COPY ${PROJ_DIR_NAME}/DefaultProj/* /home/tmp/DefaultProj
+#COPY pycom* /home/tmp
 #COPY ms-python* /home/tmp
+
+#Installing the stubs for Huzzah32
+RUN pip install -U /home/tmp/micropython_esp32_stubs-1.21.0.post3.tar
 
 RUN apt-get update -y && apt-get upgrade -y
 
 # Copy the entrypoint script into the image
-COPY entrypoint.sh /entrypoint.sh
+COPY ${PROJ_DIR_NAME}/${PARENT_DIR_NAME}/entrypoint.sh /entrypoint.sh
+
 # Ensure the script is executable
 RUN chmod +x /entrypoint.sh
 

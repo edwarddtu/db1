@@ -25,11 +25,11 @@ if [ -e "/dev/ttyUSB0" ]; then
     echo "Huzzah32 board found when starting the db1container"
     HUZZAH="--device /dev/ttyUSB0:/dev/ttyUSB0"
 # Check if /dev/tty.SLAB_USBtoUART exists
-elif [ -e "/dev/tty.SLAB_USBtoUART" ]; then
-    echo "Huzzah32 board found on a MAC computer when starting the db1container"
-    HUZZAH="--device=/dev/tty.SLAB_USBtoUART:/dev/ttyUSB0"
-    #HUZZAH="--device /dev/tty.usbserial-017473C3:/dev/ttyUSB0"
-    echo "$HUZZAH"
+#elif [ -e "/dev/tty.SLAB_USBtoUART" ]; then
+#    echo "Huzzah32 board found on a MAC computer when starting the db1container"
+#    HUZZAH="--device=/dev/tty.SLAB_USBtoUART:/dev/ttyUSB0"
+#    #HUZZAH="--device /dev/tty.usbserial-017473C3:/dev/ttyUSB0"
+#    echo "$HUZZAH"
 else
     echo "!!!!Huzzah32 board NOT found!!! Starting the db1container without Huzzah32!!!!"
     sleep 1
