@@ -45,9 +45,9 @@ echo "Starting container: $CONTAINER_NAME"
 
 docker run -it --rm\
   -v $DIRECTORY:/home/user/ \
-  -p 127.0.0.1:8080:8080 \
   $HUZZAH \
   --net=host \
   --name $CONTAINER_NAME \
   db1 
 
+#  -p 127.0.0.1:8080:8080 \

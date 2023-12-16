@@ -15,8 +15,8 @@ if [ -z "$(ls -A /home/user)" ]; then
     export PATH=/home/user/.local/bin:$PATH
     code-server --install-extension ms-python.python
     code-server --install-extension /home/tmp/$PYMAKR_FILE
- #   code-server --install-extension /home/tmp/$PYLANCE_FILE
-    pip install --upgrade micropy-cli
+#    code-server --install-extension /home/tmp/$PYLANCE_FILE
+#    pip install --upgrade micropy-cli
 
 # Copy some installation files
     cp -r /home/tmp/*.code-workspace /home/user
@@ -27,10 +27,10 @@ if [ -z "$(ls -A /home/user)" ]; then
     echo " "
     echo " "
     echo " "
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    echo "!!!   Installation is done! You can close this window NOW   !!!"
-    echo "!!!   Start the tools by using windows_db1tools.bat         !!!"
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "!!!!   Installation is done! You can close this window NOW          !!!!"
+    echo "!!!!   Start the tools by using the DB1 Tools link on your desktop  !!!!"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     echo " "
     echo " "
     echo " "

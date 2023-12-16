@@ -16,19 +16,22 @@ if ($cp210xLine -ne $null) {
         $comPort = $Matches.COMPort
 
         # Output the extracted values
-        Write-Host "Huzzah board was found"
-        #Write-Host "BUSID: $busid"
-        #Write-Host "COM Port: COM$comPort"
-        Write-Host "Connecting the serial port of the Huzzah 32 board to WSL"
+        Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        Write-Host "!!!! Huzzah32 board was found on COM$comPort        !!!!"
+        Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+        Write-Host "Connecting the serial port of the Huzzah32 board to WSL"
+        #usbipd bind --force -b $busid
         usbipd bind -b $busid
         usbipd attach --wsl --busid $busid
         sleep 1
         wsl -u root sudo chmod ugo+wr /dev/ttyUSB0
 
-        # You can use $busid and $comPort as variables here for further processing
     } else {
         Write-Host "Could not extract BUSID and COM Port."
     }
 } else {
-    Write-Host "!!!No Huzzah ESP32 board is connected"
+    Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    Write-Host "!!! Huzzah32 board is NOT connected !!!!"
+    Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 }

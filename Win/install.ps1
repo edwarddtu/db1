@@ -16,7 +16,8 @@ $Shortcut.Description = "Shortcut to the docker folder on Ubuntu(WSL)"
 $Shortcut.WorkingDirectory = "$winDockDirectory"
 $Shortcut.Save()
 
- wsl -u root apt-get install -y dos2unix
+wsl -u root apt-get -y update
+wsl -u root apt-get install -y dos2unix
 
 # Copy necessary files from the current directory in PowerShell to the 'dock' directory in WSL
 wsl dos2unix *.sh
@@ -29,37 +30,80 @@ wsl cp -rf Dockerfile* $dockDirectory
 # Output the path of the 'dock' directory for future use
 Write-Host "Files copied to WSL 'dock' directory at: $dockDirectory"
 
-# Call the Bash script (if needed)
-Write-Host "Installing docker"
-wsl -u root bash -c "chmod u+x $dockDirectory/check_and_install_docker.sh"
-wsl -u root bash -c "bash $dockDirectory/check_and_install_docker.sh $wslUserName"
 
-echo "Giving the user access to use Docker"
+function Run-BashScriptInWSL {
+    param(
+        [string]$bashScriptPath,
+        [string]$userName = $wslUserName
+    )
+    # Make sure that the script is executable
+    wsl -u $userName bash -c "chmod u+x $bashScriptPath"
+
+    # Run the Bash script in WSL
+    wsl -u $userName bash -c "bash $bashScriptPath"
+
+    # Check the exit code
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    } 
+}
+
+Write-Host "Installing docker"
+Run-BashScriptInWSL -bashScriptPath "$dockDirectory/check_and_install_docker.sh" -userName "root"
+
+Write-Host "Giving the user access to use Docker"
 wsl -u root usermod -aG docker $wslUserName
-#wsl -u root newgrp docker &
 
 Write-Host "Making the image db1_base"
-wsl -u root bash -c "chmod u+x $dockDirectory/make_db1_base.sh"
-wsl -u root bash -c "bash $dockDirectory/make_db1_base.sh"
+Run-BashScriptInWSL -bashScriptPath "$dockDirectory/make_db1_base.sh" -userName "root"
 
 Write-Host "Making the image db1_image"
-wsl  bash -c "chmod u+x $dockDirectory/initDock.sh"
-wsl  bash -c "bash $dockDirectory/initDock.sh"
+Run-BashScriptInWSL -bashScriptPath "$dockDirectory/init_dock.sh"
 
 #Making sure that we have the tools that allow us to use the serial port in WSL
 echo "Installing the usb tools"
 winget install --exact dorssel.usbipd-win
 wsl -u root apt install -y linux-tools-virtual hwdata
-wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $(command -v ls /usr/lib/linux-tools/*/usbip | tail -n1) 20
-
-#wsl -u root apt install linux-tools-5.4.0-77-generic hwdata
-#wsl -u root update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
+#wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $(command -v ls /usr/lib/linux-tools/*/usbip | tail -n1) 20
+$usbip_ver = wsl -u root ls /usr/lib/linux-tools/*/usbip | tail -n1
+Write-Host "$usbip_ver"
+wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $usbip_ver 20
 echo "Done installing the usb tools"
 
-Write-Host "Starting the container db1container"
-wsl  bash -c "chmod u+x $dockDirectory/startDock.sh"
-wsl  bash -c "bash $dockDirectory/startDock.sh"            
+function Update-Shortcut {
+    param(
+        [string]$currentPath,
+        [string]$shortcutName,
+        [string]$targetFileName
+    )
 
-# echo "!!! The one time installation is done.From !!!!"
-# echo "!!! now on you can run the tools by double !!!!"
-# echo "!!! clicking on windows_db1tools.bat       !!!!"
+    # Constructing full paths for the shortcut and target file
+    $lnkPath = Join-Path -Path $currentPath -ChildPath $shortcutName
+    $newTargetPath = Join-Path -Path $currentPath -ChildPath $targetFileName
+
+    try {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($lnkPath)
+        $shortcut.TargetPath = $newTargetPath
+        $shortcut.Save()
+        Write-Host "Shortcut updated successfully. Path: $lnkPath"
+    } catch {
+        Write-Error "Error updating shortcut: $_"
+    }
+}
+
+$currentPath = $PSScriptRoot
+
+# Update the links to point to the current path of the installation directory
+Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Connect Serial.lnk" -targetFileName "connect_serial.bat"
+Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Disconnect Serial.lnk" -targetFileName "disconnect_serial.bat"
+Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Tools.lnk" -targetFileName "windows_db1tools.bat"
+ 
+# Copy the links to desktop 
+$desktopPath = [System.Environment]::GetFolderPath('Desktop')
+cp *.lnk $desktopPath
+
+
+Write-Host "Starting the container db1container"
+Run-BashScriptInWSL -bashScriptPath "$dockDirectory/start_dock.sh"
+
