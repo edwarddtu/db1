@@ -12,15 +12,16 @@ if [ -z "$(ls -A /home/user)" ]; then
     echo "Home directory is empty. Copying default files..."
     cp -r /etc/skel/. /home/user/
     mkdir /home/user/db1
-    export PATH=/home/user/.local/bin:$PATH
+    mkdir -p /home/user/.local/bin
+    export PATH=/home/user/:$PATH
     code-server --install-extension ms-python.python
     code-server --install-extension /home/tmp/$PYMAKR_FILE
 #    code-server --install-extension /home/tmp/$PYLANCE_FILE
 #    pip install --upgrade micropy-cli
 
 # Copy some installation files
-    cp -r /home/tmp/*.code-workspace /home/user
-    cp -r /home/tmp/DefaultProj/* /home/user/db1
+    cp -r /home/tmp/*.code-workspace /home/user/
+    cp -r /home/tmp/DefaultProj/* /home/user/db1/
     cp -r /home/tmp/*.sh /home/user/.local/bin
 
 

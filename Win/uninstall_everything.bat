@@ -6,7 +6,7 @@ SET "scriptdir=%~dp0"
 :: Change to that directory
 cd /d "%scriptdir%"
 
-call :RunPowerShellScript "./uninstall_everything.ps1"
+call :RunPowerShellScript "./uninstall_everything_ps.ps1"
 
 if %errorlevel%  equ 0 pause
 

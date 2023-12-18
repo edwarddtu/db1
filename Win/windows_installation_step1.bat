@@ -15,7 +15,7 @@ SET "scriptdir=%~dp0"
 cd /d "%scriptdir%"
 
 
-call :RunPowerShellScript "./check_wsl.ps1"
+call :RunPowerShellScript "./check_wsl_ps.ps1"
 :: Add more scripts as needed
 
 if %errorlevel%  equ 0 pause
@@ -33,6 +33,3 @@ pause
 exit /b %errorlevel%
 
 :eof
-
-
-PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& ./tmp.ps1"

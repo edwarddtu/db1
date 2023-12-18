@@ -5,16 +5,25 @@ $dockDirectory = "/home/$wslUserName/dock"
 # Create the 'dock' subdirectory in the WSL user's home directory
 wsl mkdir -p $dockDirectory
 
-$winDesktop= "$home\Desktop"
-$winDockDirectory = "\\wsl.localhost\Ubuntu\home\$wslUserName\dock"
+function WaitForFileCreation {
+    param (
+        [string]$filePath
+    )
 
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut( "$home\Desktop\DOCK.lnk")
-$Shortcut.TargetPath = "$winDockDirectory"
-$Shortcut.WindowStyle = 1
-$Shortcut.Description = "Shortcut to the docker folder on Ubuntu(WSL)"
-$Shortcut.WorkingDirectory = "$winDockDirectory"
-$Shortcut.Save()
+    # Keep checking until the file is created
+    while ($true) {
+        if (Test-Path $filePath) {
+            Write-Host "File found: $filePath"
+            return
+        } else {
+            Write-Host "Waiting for file to be created: $filePath"
+            Start-Sleep -Seconds 1
+        }
+    }
+}
+
+# Usage
+# WaitForFileCreation -filePath "C:\path\to\your\file.txt"
 
 wsl -u root apt-get -y update
 wsl -u root apt-get install -y dos2unix
@@ -65,7 +74,7 @@ echo "Installing the usb tools"
 winget install --exact dorssel.usbipd-win
 wsl -u root apt install -y linux-tools-virtual hwdata
 #wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $(command -v ls /usr/lib/linux-tools/*/usbip | tail -n1) 20
-$usbip_ver = wsl -u root ls /usr/lib/linux-tools/*/usbip | tail -n1
+$usbip_ver = wsl -u root "ls /usr/lib/linux-tools/*/usbip | tail -n1"
 Write-Host "$usbip_ver"
 wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $usbip_ver 20
 echo "Done installing the usb tools"
@@ -93,11 +102,25 @@ function Update-Shortcut {
 }
 
 $currentPath = $PSScriptRoot
+$winDockDirectory = "\\wsl.localhost\Ubuntu\home\$wslUserName\dock"
+Write-Host "$winDockDirectory"
 
 # Update the links to point to the current path of the installation directory
 Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Connect Serial.lnk" -targetFileName "connect_serial.bat"
 Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Disconnect Serial.lnk" -targetFileName "disconnect_serial.bat"
 Update-Shortcut -currentPath "$currentPath" -shortcutName "DB1 Tools.lnk" -targetFileName "windows_db1tools.bat"
+
+$lnkPath="DB1 dock files.lnk"
+$newTargetPath = "$winDockDirectory"
+try {
+    $shell = New-Object -ComObject WScript.Shell
+    $shortcut = $shell.CreateShortcut($lnkPath)
+    $shortcut.TargetPath = $newTargetPath
+    $shortcut.Save()
+    Write-Host "Shortcut updated successfully. Path: $lnkPath"
+} catch {
+    Write-Error "Error updating shortcut: $_"
+}
  
 # Copy the links to desktop 
 $desktopPath = [System.Environment]::GetFolderPath('Desktop')

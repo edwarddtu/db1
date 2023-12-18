@@ -9,7 +9,7 @@ SET "scriptdir=%~dp0"
 cd /d "%scriptdir%"
 
 
-call :RunPowerShellScript "./install.ps1"
+call :RunPowerShellScript "./install_ps.ps1"
 :: Add more scripts as needed
 
 if %errorlevel%  equ 0 pause

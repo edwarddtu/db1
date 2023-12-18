@@ -5,7 +5,7 @@ SET "scriptdir=%~dp0"
 :: Change to that directory
 cd /d "%scriptdir%"
 
-call :RunPowerShellScript "./reinstall_usb.ps1"
+call :RunPowerShellScript "./reinstall_usb_ps.ps1"
 
 if %errorlevel%  equ 0 pause
 

@@ -12,8 +12,10 @@ $response = Read-Host "Do you wish to continue? (yes/no)"
 
 # Check the response
 if ($response -eq "yes") {
-    echo "Uninstalling the USB tools"
-    winget uninstall --exact dorssel.usbipd-win
+    #It's best if I don't uninstall the USB tools.They don't work properly
+    #when I reinstall them.
+    #echo "Uninstalling the USB tools"
+    #winget uninstall --exact dorssel.usbipd-win
     echo "Uninstalling Ubuntu"
     wsl --unregister Ubuntu
     echo "Removing the desktop shortcuts for the DB1 tools"
@@ -38,7 +40,7 @@ if ($response -eq "yes") {
     Remove-FileIfExists -filePath "$desktopPath\DB1 Connect Serial.lnk"
     Remove-FileIfExists -filePath "$desktopPath\DB1 Disconnect Serial.lnk"
     Remove-FileIfExists -filePath "$desktopPath\DB1 Tools.lnk"
-    Remove-FileIfExists -filePath "$desktopPath\DOCK.lnk"
+    Remove-FileIfExists -filePath "$desktopPath\DB1 dock files.lnk"
 } elseif ($response -eq "no") {
     Write-Host "You've chosen not to proceed. We exit without uninstalling the Db1tools"
 } else {

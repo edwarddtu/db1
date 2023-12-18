@@ -6,9 +6,9 @@ wsl -u root apt-get remove -y linux-tools-virtual hwdata
 Write-Host "Installing the usb tools"
 winget install --exact dorssel.usbipd-win
 wsl -u root apt-get install -y linux-tools-virtual hwdata
-$usbip_ver = wsl -u root ls /usr/lib/linux-tools/*/usbip | tail -n1
-Write-Host "$usbip_ver"
-wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $usbip_ver 20
+#$usbip_ver = wsl -u root ls /usr/lib/linux-tools/*/usbip | tail -n1
+#Write-Host "$usbip_ver"
+#wsl -u root update-alternatives --install /usr/local/bin/usbip usbip $usbip_ver 20
 
 function Update-Shortcut {
     param(

@@ -6,5 +6,5 @@ SET "scriptdir=%~dp0"
 :: Change to that directory
 cd /d "%scriptdir%"
 
-PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './connect_serial.ps1'"
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './connect_serial_ps.ps1'"
 pause
