@@ -22,6 +22,9 @@ RUN apt-get update \
     udev \
     lsof \
     nano \
+    gosu \
+    socat \
+    psmisc \
     screen \
     language-pack-en-base \
     python3 \
@@ -46,8 +49,21 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 #Saving the pymakr extension on the tmp directory
 RUN mkdir /home/tmp
 COPY ${PROJ_DIR_NAME}/Common/* /home/tmp
-#COPY pycom* /home/tmp
-#COPY ms-python* /home/tmp
+
+RUN mkdir /home/tmp/DefaultProj
+COPY ${PROJ_DIR_NAME}/DefaultProj/* /home/tmp/DefaultProj
+
+#Copy the script that is used for the serial port
+COPY ${PROJ_DIR_NAME}/Mac/container_serial.sh /home/tmp
+COPY ${PROJ_DIR_NAME}/Mac/huzzah_erase.sh /home/tmp
+COPY ${PROJ_DIR_NAME}/Mac/huzzah_fw.sh /home/tmp
+
+RUN chmod +x /home/tmp/*.sh
+RUN chown root:root /home/tmp/container_serial.sh
+
+#Installing the stubs for Huzzah32
+RUN pip install -U /home/tmp/micropython_esp32_stubs-1.21.0.post3.tar
+ 
 
 RUN apt-get update -y && apt-get upgrade -y
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
 # Function to execute a command, stream output, check for errors, and log to file
 execute_and_check() {
     # Log file path
@@ -59,11 +61,14 @@ pause(){
 
 # Function to install Docker
 install_docker() {
-    echo "!!!!Before you continue with the installation you'll have to!!!!"
-    echo "!!!!install Docker manually from this web site:             !!!!"
-    echo "!!!!https://www.docker.com/products/docker-desktop/         !!!!"
-    echo "!!!!Rerun this script again after you've installed docker   !!!!"
-    open "https://www.docker.com/products/docker-desktop/"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    echo "!!!! Before you continue with the installation you'll have to !!!!"
+    echo "!!!! install Docker manually from this web site:              !!!!"
+    echo "!!!! https://www.docker.com/products/docker-desktop/          !!!!"
+    echo "!!!! Rerun this script again after you've installed docker    !!!!"
+    echo "!!!! and press any key to continue the installation           !!!!"
+    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    open "https://www.docker.com/products/docker-desktop/" &
     pause
     exit
 }
@@ -76,7 +81,7 @@ start_docker() {
 
 # Checks if the directory user exists and if not it creates it
 check_user_directory(){
-DIRECTORY="$(pwd)"/user
+DIRECTORY=$SCRIPT_DIR/user
 
 if [ -d "$DIRECTORY" ]; then
     echo "Directory exists: $DIRECTORY"
@@ -103,10 +108,52 @@ execute_and_check start_docker
 
 execute_and_check echo "Docker is running."
 
+# Stop all running containers
+docker stop $(docker ps -a -q)
+
+#Remove all containers
+docker rm $(docker ps -a -q)
+
+cd $SCRIPT_DIR
+
+echo "pwd is: $(pwd)"
+
 execute_and_check echo "Now we create the base image. This might take a while..."
-execute_and_check ./make_db1_base.sh
+execute_and_check $SCRIPT_DIR/make_db1_base.sh
 execute_and_check echo "Now we confgure and create the db1 image..." 
-execute_and_check ./initDock.sh
+execute_and_check $SCRIPT_DIR/init_dock.sh
 execute_and_check check_user_directory
-execute_and_check echo "!!!The installation is done!!!"
+
+# Adding the current path to the PATH environment variable so that
+# we can run the tools from the desktop icons
+NEW_PATH=$(pwd)
+
+# Function to update PATH
+update_path() {
+    if ! echo $PATH | grep -q "$1"; then
+        echo "export PATH=\"$1:\$PATH\"" >> ~/.bash_profile
+        echo "" >> ~/.zprofile
+        echo "export PATH=\"$1:\$PATH\"" >> ~/.zprofile
+        
+        echo "Path $1 added to PATH"
+    else
+        echo "Path $1 is already in PATH"
+    fi
+}
+
+# Call the function with NEW_PATH
+update_path "$NEW_PATH"
+
+# Copy icons to the desktop
+cp -r ./DB1*.app $HOME/Desktop
+ln -snf $(pwd) "$HOME/Desktop/DB1 dock files"
+docker image prune -f
+
+CONTAINER_NAME="db1container"
+docker run --name $CONTAINER_NAME -p 8080:8080 -v $SCRIPT_DIR/user:/home/user db1:latest
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!!! The installation is done. Please close this window !!!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
 

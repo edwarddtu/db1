@@ -17,7 +17,7 @@ proj_dir_name=$(basename $parent_dir)
 cd "$current_dir/../../"
 
 # Run the docker build command with the parent directory name as a build argument
-docker build --no-cache --build-arg PROJ_DIR_NAME="$proj_dir_name" --build-arg PARENT_DIR_NAME="$parent_dir" -f "$current_dir/Dockerfile1" -t db1_base .
+docker build --build-arg PROJ_DIR_NAME="$proj_dir_name" --build-arg PARENT_DIR_NAME="$parent_dir" -f "$current_dir/Dockerfile1" -t db1_base .
 
 
 # Check the exit status of the Docker command

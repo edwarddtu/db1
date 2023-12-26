@@ -16,10 +16,10 @@ port = 12345      # TCP port to listen on
 def handle_client_input(conn, ser):
     try:
         while True:
-            data = conn.recv(1024)
-            if data:
+            data_in = conn.recv(1024*20)
+            if data_in:
                 #print(f"Received data from TCP client: {data}")
-                ser.write(data)
+                ser.write(data_in)
                 #print("Data written to serial port.")
             else:
                 print("No data received from TCP client or connection closed.")
@@ -33,9 +33,9 @@ def listen_serial_output(conn, ser):
     try:
         while True:
             if ser.in_waiting:
-                data = ser.read(ser.in_waiting)
+                data_out = ser.read(ser.in_waiting)
                 #print(f"Received data from serial port: {data}")
-                conn.sendall(data)
+                conn.sendall(data_out)
                 #print("Data sent to TCP client.")
     except Exception as e:
         print(f"Error in serial output handler: {e}")
