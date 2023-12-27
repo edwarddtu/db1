@@ -10,10 +10,10 @@ PIDS=$(lsof $DEVICE | awk 'NR>1 {print $2}')
 
 # Check if any processes were found
 if [ -z "$PIDS" ]; then
-    echo "No processes are using $DEVICE."
+    echo "The serial port $DEVICE is avaialble."
 else
     # Kill the processes
-    echo "Killing processes using $DEVICE:"
+    echo "Killing processes using $DEVICE to make it avaialble:"
     for PID in $PIDS; do
         echo "Killing process $PID"
         kill -9 $PID
