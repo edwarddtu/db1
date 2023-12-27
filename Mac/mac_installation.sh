@@ -37,10 +37,39 @@ install_homebrew() {
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
-execute_and_check xattr -d com.apple.quarantine "Mac Installation.app"
-execute_and_check xattr -d com.apple.quarantine "DB1 Tools.app"
-execute_and_check xattr -d com.apple.quarantine "DB1 Huzzah Firmware.app"
-execute_and_check xattr -d com.apple.quarantine "DB1 Huzzah Erase.app"
+install_icons(){
+    echo "Installing the incons"
+    # Define the path to the disk image and the destination folder
+    DISK_IMAGE_PATH="$SCRIPT_DIR/db1.dmg"
+    echo "DISK_IMAGE_PATH=$DISK_IMAGE_PATH"
+    DESTINATION_FOLDER="$SCRIPT_DIR"
+
+    # Mount the disk image
+    echo "Mounting the disk image..."
+    MOUNT_POINT=$(hdiutil attach "$DISK_IMAGE_PATH" -nobrowse -readonly | awk '$NF ~ /Volumes/ {print $NF}')
+
+    # Check if the mount was successful
+    if [ -z "$MOUNT_POINT" ]; then
+        echo "Failed to mount the disk image."
+        exit 1
+    fi
+
+    echo "Disk image mounted at $MOUNT_POINT"
+
+    # Copy files from the mounted image to the destination folder
+    echo "Copying files..."
+    cp -R "$MOUNT_POINT/"* "$DESTINATION_FOLDER"
+
+    # Unmount the disk image
+    echo "Unmounting the disk image..."
+    hdiutil detach "$MOUNT_POINT"
+    xattr -d com.apple.quarantine "$DESTINATION_FOLDER/Mac Installation.app"
+    xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Tools.app"
+    xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Huzzah Firmware.app"
+    xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Huzzah Erase.app"    
+}
+
+execute_and_check install_icons
 
 # Main script execution
 execute_and_check echo "Checking for Homebrew..."
@@ -151,7 +180,10 @@ update_path "$NEW_PATH"
 
 # Copy icons to the desktop
 cp -r ./DB1*.app $HOME/Desktop
+cp -r ./DB1*.app /Applications/
 ln -snf $(pwd) "$HOME/Desktop/DB1 dock files"
+
+
 docker image prune -f
 
 CONTAINER_NAME="db1container"
