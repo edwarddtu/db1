@@ -52,6 +52,10 @@ uninstall_syslab_serial_driver(){
 
 uninstall_syslab_serial_driver
 
+#We try to kill all the processes associated with docker
+pkill -9 -f "Docker"
+
+
 #Removing docker if it was installed using brew
 brew remove --cask --force docker
 
