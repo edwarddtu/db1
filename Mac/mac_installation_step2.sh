@@ -25,18 +25,6 @@ execute_and_check() {
     fi
 }
 
-# Function to check if Homebrew is installed
-check_homebrew_installed() {
-    which brew &> /dev/null
-    return $?
-}
-
-# Function to install Homebrew
-install_homebrew() {
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-}
-
 install_icons(){
     echo "Installing the incons"
     # Define the path to the disk image and the destination folder
@@ -63,100 +51,12 @@ install_icons(){
     # Unmount the disk image
     echo "Unmounting the disk image..."
     hdiutil detach "$MOUNT_POINT"
-    xattr -d com.apple.quarantine "$DESTINATION_FOLDER/Mac Installation.app"
     xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Tools.app"
     xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Huzzah Firmware.app"
     xattr -d com.apple.quarantine "$DESTINATION_FOLDER/DB1 Huzzah Erase.app"    
 }
 
 execute_and_check install_icons
-
-# Main script execution
-execute_and_check echo "Checking for Homebrew..."
-
-if check_homebrew_installed; then
-    execute_and_check echo "Homebrew is already installed."
-else
-    execute_and_check echo "Homebrew not found. Installing Homebrew..."
-    execute_and_check install_homebrew
-fi
-
-
-# Function to check if Docker is installed
-check_docker_installed() {
-    which docker &> /dev/null
-    return $?
-}
-
-pause(){
-	read -p "Press any key to continue..." -n1 -s
-	echo " "
-}
-
-# Function to install Docker
-install_docker() {
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    echo "!!!! Before you continue with the installation you'll have to !!!!"
-    echo "!!!! install Docker manually from this web site:              !!!!"
-    echo "!!!! https://www.docker.com/products/docker-desktop/          !!!!"
-    echo "!!!! Rerun this script again after you've installed docker    !!!!"
-    echo "!!!! and press any key to continue the installation           !!!!"
-    echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    open "https://www.docker.com/products/docker-desktop/" &
-    pause
-    exit
-}
-
-# Function to start Docker
-start_docker() {
-    echo "Starting Docker..."
-    open -a Docker
-}
-
-# Checks if the directory user exists and if not it creates it
-check_user_directory(){
-DIRECTORY=$SCRIPT_DIR/user
-
-if [ -d "$DIRECTORY" ]; then
-    echo "Directory exists: $DIRECTORY"
-else
-    echo "Directory does not exist. Creating: $DIRECTORY"
-    mkdir -p "$DIRECTORY"
-fi
-
-}
-
-
-# Main script execution
-execute_and_check echo "Checking for Docker..."
-
-if check_docker_installed; then
-    execute_and_check echo "Docker is already installed."
-else
-    execute_and_check echo "Docker not found. Installing Docker..."
-    execute_and_check install_docker
-fi
-
-execute_and_check echo "Starting Docker daemon..."
-execute_and_check start_docker
-
-execute_and_check echo "Docker is running."
-
-# Stop all running containers
-docker stop $(docker ps -a -q)
-
-#Remove all containers
-docker rm $(docker ps -a -q)
-
-cd $SCRIPT_DIR
-
-echo "pwd is: $(pwd)"
-
-execute_and_check echo "Now we create the base image. This might take a while..."
-execute_and_check $SCRIPT_DIR/make_db1_base.sh
-execute_and_check echo "Now we confgure and create the db1 image..." 
-execute_and_check $SCRIPT_DIR/init_dock.sh
-execute_and_check check_user_directory
 
 # Adding the current path to the PATH environment variable so that
 # we can run the tools from the desktop icons
@@ -177,6 +77,73 @@ update_path() {
 
 # Call the function with NEW_PATH
 update_path "$NEW_PATH"
+
+pause(){
+	read -p "Press any key to continue..." -n1 -s
+	echo " "
+}
+
+
+# Function to start Docker
+start_docker() {
+    echo "Starting Docker..."
+    open -a Docker
+}
+
+
+
+# Checks if the directory user exists and if not it creates it
+check_user_directory(){
+DIRECTORY=$SCRIPT_DIR/user
+
+if [ -d "$DIRECTORY" ]; then
+    echo "Directory exists: $DIRECTORY"
+else
+    echo "Directory does not exist. Creating: $DIRECTORY"
+    mkdir -p "$DIRECTORY"
+fi
+
+}
+
+# Checking for prerequisites
+execute_and_check start_docker
+
+# Check Python version
+REQUIRED_PYTHON="3.10"
+INSTALLED_PYTHON=$(python3 --version | awk '{print $2}')
+if [ "$(printf '%s\n' "$REQUIRED_PYTHON" "$INSTALLED_PYTHON" | sort -V | head -n1)" != "$REQUIRED_PYTHON" ]; then 
+execute_and_check    echo "Error: Python version is less than $REQUIRED_PYTHON. You need at least python 3.10"
+execute_and_check    echo "Installation step 1 should have intalled a recent version of python3. Did you run step 1?"
+    exit 1
+else
+execute_and_check    echo "Python version is $INSTALLED_PYTHON. This is OK."
+fi
+
+# Check if Docker is running
+if ! docker info > /dev/null 2>&1; then
+execute_and_check     echo "Error: Docker engine is not running. Make sure that you start docker before running installation step 2!"
+    exit 1
+else
+execute_and_check     echo "Docker engine is running."
+fi
+
+# Removing the DB1container so that we can make a new one.
+# Name of the Docker container
+CONTAINER_NAME="db1container"
+
+# Stop the container if it's running
+docker stop "$CONTAINER_NAME"
+
+# Remove the container
+docker rm "$CONTAINER_NAME"
+
+cd $SCRIPT_DIR
+
+execute_and_check echo "Now we create the base image. This might take a while..."
+execute_and_check $SCRIPT_DIR/make_db1_base.sh
+execute_and_check echo "Now we confgure and create the db1 image..." 
+execute_and_check $SCRIPT_DIR/init_dock.sh
+execute_and_check check_user_directory
 
 # Copy icons to the desktop
 cp -r ./DB1*.app $HOME/Desktop
