@@ -37,6 +37,11 @@ install_homebrew() {
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
+execute_and_check xattr -d com.apple.quarantine "Mac Installation.app"
+execute_and_check xattr -d com.apple.quarantine "DB1 Tools.app"
+execute_and_check xattr -d com.apple.quarantine "DB1 Huzzah Firmware.app"
+execute_and_check xattr -d com.apple.quarantine "DB1 Huzzah Erase.app"
+
 # Main script execution
 execute_and_check echo "Checking for Homebrew..."
 
