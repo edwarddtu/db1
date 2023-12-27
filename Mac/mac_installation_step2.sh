@@ -46,7 +46,7 @@ install_icons(){
 
     # Copy files from the mounted image to the destination folder
     echo "Copying files..."
-    cp -R "$MOUNT_POINT/"* "$DESTINATION_FOLDER"
+    cp -R "$MOUNT_POINT/"DB1* "$DESTINATION_FOLDER"
 
     # Unmount the disk image
     echo "Unmounting the disk image..."
@@ -108,16 +108,15 @@ fi
 # Checking for prerequisites
 execute_and_check start_docker
 
-# Check Python version
-REQUIRED_PYTHON="3.10"
-INSTALLED_PYTHON=$(python3 --version | awk '{print $2}')
-if [ "$(printf '%s\n' "$REQUIRED_PYTHON" "$INSTALLED_PYTHON" | sort -V | head -n1)" != "$REQUIRED_PYTHON" ]; then 
-execute_and_check    echo "Error: Python version is less than $REQUIRED_PYTHON. You need at least python 3.10"
-execute_and_check    echo "Installation step 1 should have intalled a recent version of python3. Did you run step 1?"
+# Check if esptool.py is installed and available in PATH
+if ! command -v esptool.py &> /dev/null; then
+    echo "Error: esptool.py is not installed or not found in PATH."
+    echo "esptool should be install by the script from step 1."
     exit 1
-else
-execute_and_check    echo "Python version is $INSTALLED_PYTHON. This is OK."
 fi
+
+# If this point is reached, esptool.py is installed
+echo "esptool.py is installed."
 
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then

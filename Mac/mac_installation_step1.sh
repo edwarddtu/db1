@@ -119,6 +119,9 @@ fi
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+#install esptool
+brew install esptool
+#brew link --overwrite six
 
 # Function to create an alias if a command does not exist
 create_alias_if_command_not_found() {
