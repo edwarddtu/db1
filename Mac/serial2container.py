@@ -8,6 +8,7 @@ import sys
 # Serial port settings
 serial_port = '/dev/tty.SLAB_USBtoUART'
 baud_rate = 115200
+buffer_size = 1048576
 
 # Network settings
 host = '0.0.0.0'  # Listen on all available interfaces
@@ -16,7 +17,7 @@ port = 12345      # TCP port to listen on
 def handle_client_input(conn, ser):
     try:
         while True:
-            data_in = conn.recv(1024*20)
+            data_in = conn.recv(buffer_size)
             if data_in:
                 #print(f"Received data from TCP client: {data}")
                 ser.write(data_in)
