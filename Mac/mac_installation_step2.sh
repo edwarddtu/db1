@@ -118,6 +118,9 @@ fi
 # If this point is reached, esptool.py is installed
 echo "esptool.py is installed."
 
+# Make sure that pyserial is installed
+pip3 install pyserial
+
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
 execute_and_check     echo "Error: Docker engine is not running. Make sure that you start docker before running installation step 2!"

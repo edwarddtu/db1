@@ -19,7 +19,7 @@ docker rm $(docker ps -a -q)
 docker rmi $(docker images -q)
 
 # Remove Docker application
-#/Applications/Docker.app/Contents/MacOS/uninstall
+/Applications/Docker.app/Contents/MacOS/uninstall
 
 echo "All docker containers and images were erased."
 
@@ -50,11 +50,20 @@ uninstall_syslab_serial_driver(){
 	fi
 }
 
-uninstall_syslab_serial_driver
+#uninstall_syslab_serial_driver
 
 #We try to kill all the processes associated with docker
-pkill -9 -f "Docker"
+#pkill -9 -f "Docker"
 
+rm -rf /opt/homebrew/Frameworks/
+rm -rf /opt/homebrew/bin/
+rm -rf /opt/homebrew/etc/
+rm -rf /opt/homebrew/include/
+rm -rf /opt/homebrew/lib/
+rm -rf /opt/homebrew/opt/
+rm -rf /opt/homebrew/sbin/
+rm -rf /opt/homebrew/share/
+rm -rf /opt/homebrew/var/
 
 #Removing docker if it was installed using brew
 brew remove --cask --force docker
