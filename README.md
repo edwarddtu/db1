@@ -1,6 +1,6 @@
 # DB1tools
 
-These tools are used for programming the Huzzah32 microcontroller using a micropython in a programming environment based on Visual Studio Code (server) and Pymakr.
+These tools are used for programming the [Huzzah32 microcontroller](https://www.adafruit.com/product/3591) using [MicroPython](https://micropython.org) in a programming environment based on [Visual Studio Code (server)](https://code.visualstudio.com/docs/remote/vscode-server) and [Pymakr](https://github.com/pycom/Pymakr).
 
 ## Installation
 For now I've focused on getting the tools to run on Windows and Mac, but if there is a demand for it I can also make them work on Linux.
