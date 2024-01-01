@@ -2,6 +2,10 @@
 $wslUserName= wsl sh -c 'echo $USER'
 $dockDirectory = "/home/$wslUserName/dock"
 
+#making sure that we use WSL2 for ubuntu
+wsl --set-version Ubuntu 2
+
+
 # Create the 'dock' subdirectory in the WSL user's home directory
 wsl mkdir -p $dockDirectory
 
