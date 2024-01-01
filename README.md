@@ -11,4 +11,5 @@ To see how to install the tools for Windows you can follow the instructions from
 ### *Mac Installation*
 To see how to install the tools for Mac you can follow the instructions from [this video](https://youtu.be/m7bj76Hva9c "DB1tools Mac installaltion").
 
-
+### `Changing user password`
+After you have finished installing the DB1tools you should also change the user password for the virtual machine as described in [this video](https://youtu.be/s227ded1QQM).
