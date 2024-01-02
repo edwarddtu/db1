@@ -13,3 +13,7 @@ To see how to install the tools for Mac you can follow the instructions from [th
 
 ### `Changing user password`
 After you have finished installing the DB1tools you should also change the user password for the virtual machine as described in [this video](https://youtu.be/s227ded1QQM).
+
+### Troubleshooting
+* Make sure that there are no empty spaces in the path that you use to save the DB1Tools. I haven't testet this but non english letters (for example å,ø,æ,õ,ö) in the path can also make problems.
+* Don't move or delete the DB1tools during the course. The links from the desktop that you use to start the tools refer to the path were the tools were placed at the installation time.
