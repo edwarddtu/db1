@@ -17,3 +17,6 @@ After you have finished installing the DB1tools you should also change the user 
 ### Troubleshooting
 * Make sure that there are no empty spaces in the path that you use to save the DB1Tools. I haven't testet this but non english letters (for example å,ø,æ,õ,ö) in the path can also make problems.
 * Don't move or delete the DB1tools during the course. The links from the desktop that you use to start the tools refer to the path were the tools were placed at the installation time.
+
+### Mac installation troubleshooting
+* Looks like you need to close the terminal window were you've run the step1 of the intallation process before running step2. Step1 is setting some environment varibles and are visible only if we open a new terminal window.
